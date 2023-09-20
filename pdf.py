@@ -1,28 +1,26 @@
-import PyPDF2
 import time
-import pyautogui
+import AppKit
+from PyPDF2 import PdfReader
 
-# Open the PDF file
-with open('file.pdf', 'rb') as pdf_file:
-    pdf_reader = PyPDF2.PdfFileReader(pdf_file)
+pdf_file_path = '/Users/mertpolat/Downloads/Docker Üzerinde MongoDB Cluster ve Metric Toplama İşlemleri.pdf'
 
-    # Get the total number of pages
-    total_pages = pdf_reader.numPages
+pdf_reader = PdfReader(pdf_file_path)
 
-    # Define how often to scroll (e.g., every 15 seconds)
-    scroll_interval = 15
+total_pages = len(pdf_reader.pages)
 
-    # Start the page scrolling process
-    for page_num in range(total_pages):
-        # Read the relevant page from the PDF
-        page = pdf_reader.getPage(page_num)
+scroll_interval = 15
 
-        # You can decide to scroll by analyzing the page
-        should_scroll = True  # Always scroll the page (e.g., if you want to scroll every page of the document)
+app = AppKit.NSApplication.sharedApplication()
+window = app.mainWindow()
 
-        if should_scroll:
-            # Scroll the page down
-            pyautogui.scroll(-1)
+# Check if the main window exists
+if window is not None:
+    window.makeFirstResponder()
 
-        # Wait for the specified interval
-        time.sleep(scroll_interval)
+for page_num in range(total_pages):
+    should_scroll = True
+
+    if should_scroll and window is not None:
+        window.scrollWheel(AppKit.NSEventModifierFlags.CommandKeyModifierFlag, 1)
+
+    time.sleep(scroll_interval)
